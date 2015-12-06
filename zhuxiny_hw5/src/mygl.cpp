@@ -167,7 +167,7 @@ void MyGL::keyPressEvent(QKeyEvent *e)
 
 void MyGL::SceneLoadDialog()
 {//C:\Users\xinyue\Desktop\computer graphics\hw05:--"../scene_files"
-    QString filepath = QFileDialog::getOpenFileName(0, QString("Load Scene"), QString("C:/Users/xinyue/Desktop/computer graphics/hw05"), tr("*.xml"));
+    QString filepath = QFileDialog::getOpenFileName(0, QString("Load Scene"), QString("C:/Users/xinyue/Desktop/new_final/scenefiles"), tr("*.xml"));
     if(filepath.length() == 0)
     {
         return;
@@ -197,21 +197,27 @@ void MyGL::SceneLoadDialog()
 
 void MyGL::RaytraceScene()
 {
-    QString filepath = QFileDialog::getSaveFileName(0, QString("Save Image"), QString("C:/Users/xinyue/Desktop/computer graphics/hw05/zhuxiny_hw5/rendered_images"), tr("*.bmp"));
+    QString filepath = QFileDialog::getSaveFileName(0, QString("Save Image"), QString("C:/Users/xinyue/Desktop/new_final/rendered_images"), tr("*.bmp"));
     if(filepath.length() == 0)
     {
         return;
     }
+
+    //------------------------
+    //-----------volumetric--------
+    //-----------------------------
+    integrator.SetVoxel_Density();
+    //-----------------------------
 
 #define MULTITHREADED
 #ifdef MULTITHREADED
     //Set up 16 (max) threads
     unsigned int width = scene.camera.width;
     unsigned int height = scene.camera.height;
-    unsigned int x_block_size = (width >= 4 ? width/4 : 1);
-    unsigned int y_block_size = (height >= 4 ? height/4 : 1);
-    unsigned int x_block_count = width > 4 ? width/x_block_size : 1;
-    unsigned int y_block_count = height > 4 ? height/y_block_size : 1;
+    unsigned int x_block_size = (width >= 15 ? width/15 : 1);
+    unsigned int y_block_size = (height >= 15 ? height/15 : 1);
+    unsigned int x_block_count = width > 15 ? width/x_block_size : 1;
+    unsigned int y_block_count = height > 15 ? height/y_block_size : 1;
     if(x_block_count * x_block_size < width) x_block_count++;
     if(y_block_count * y_block_size < height) y_block_count++;
 
@@ -267,18 +273,21 @@ void MyGL::RaytraceScene()
     std::mt19937 mg(rd());
     float ttx,tty;
     std::uniform_real_distribution<float> u01(0.f,1.f);*/
+    bool first;
     StratifiedPixelSampler pixel_sampler(scene.sqrt_samples,0);
     for(unsigned int i = 0; i < scene.camera.width; i++)
     {
         for(unsigned int j = 0; j < scene.camera.height; j++)
         {
-            QList<glm::vec2> sample_points = pixel_sampler.GetSamples(498,302);//272,298//498 302
+            QList<glm::vec2> sample_points = pixel_sampler.GetSamples(100,100);//272,298//498 302
             glm::vec3 accum_color;
 
             for(int a = 0; a < sample_points.size(); a++)
             {
-
-               glm::vec3 color = integrator.TraceRay(scene.camera.Raycast(sample_points[a]), 0);
+                if(i==0&&j==0){first=true;}
+                else first =false;
+                glm::vec3 color= integrator.Volumetric_Render(scene.camera.Raycast(sample_points[a]),first);
+              // glm::vec3 color = integrator.TraceRay(scene.camera.Raycast(sample_points[a]), 0);
                 accum_color += color;
              }
             scene.film.pixels[i][j] = accum_color / (float)sample_points.size();

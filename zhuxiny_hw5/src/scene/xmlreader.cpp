@@ -4,6 +4,7 @@
 #include <scene/geometry/sphere.h>
 #include <scene/geometry/square.h>
 #include <scene/geometry/disc.h>
+#include <scene/geometry/cloud.h>
 #include <iostream>
 #include <scene/materials/material.h>
 #include <scene/materials/lightmaterial.h>
@@ -138,6 +139,11 @@ Geometry* XMLReader::LoadGeometry(QXmlStreamReader &xml_reader, QMap<QString, QL
     {
         result = new Disc();
     }
+    //----------------read voxel render------------
+    else if(QStringRef::compare(type,QString("cloud")) == 0)
+    {
+        result = new Cloud();
+    }
     else
     {
         std::cout << "Could not parse the geometry!" << std::endl;
@@ -159,6 +165,19 @@ Geometry* XMLReader::LoadGeometry(QXmlStreamReader &xml_reader, QMap<QString, QL
                 ((Mesh*)result)->LoadOBJ(xml_reader.text(), local_path);
             }
             xml_reader.readNext();
+        }
+        else if(QString::compare(tag, QString("voxelsize")) ==0)
+        {
+                xml_reader.readNext();
+
+                glm::vec3 s;
+                if(xml_reader.isCharacters())
+                {
+                    QStringRef vec = xml_reader.text();
+                    s = ToVec3(vec);
+                }
+                result->voxelsize=s;
+                xml_reader.readNext();
         }
         else if(QString::compare(tag, QString("transform")) == 0)
         {

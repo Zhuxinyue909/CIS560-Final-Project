@@ -15,6 +15,7 @@ void RenderThread::run()
     // unif_distribution(mersenne_generator);
    // std::mt19937 mg(seed);
    // std::uniform_real_distribution<float> u01(0.f,1.f);
+    bool first=true;
     for(unsigned int Y = y_start; Y < y_end; Y++)
     {
         for(unsigned int X = x_start; X < x_end; X++)
@@ -25,10 +26,16 @@ void RenderThread::run()
             for(int i = 0; i < samples.size(); i++)
 
             {
-                //float x= u01(mg);//u01(mg);
-               // float y= u01(mg);
+
                 Ray ray = camera->Raycast(samples[i]);
-                pixel_color += integrator->TraceRay(ray, 0);
+                //------------------------------------------
+                //------------volumetric render------------
+
+                pixel_color += integrator->Volumetric_Render(ray,first);
+                first=false;
+                //-----------------------------------------
+                //-----------------------------------------
+              //  pixel_color += integrator->TraceRay(ray, 0);
             }
             pixel_color /= (float)samples.size();
             film->pixels[X][Y] = pixel_color;

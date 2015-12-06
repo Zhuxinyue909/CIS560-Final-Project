@@ -7,7 +7,7 @@ static const int CUB_VERT_COUNT = 24;
 
 void Cube::ComputeArea()
 {
-    //Extra credit to implement this 
+    //Extra credit to implement this
      glm::vec3 s=transform.getScale();
      area = 2*(s.x*s.y + s.y*s.z +s.z*s.x);
 

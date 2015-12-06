@@ -8,10 +8,18 @@
 
 class Geometry;
 class Material;
-
+class Voxel
+{
+public:
+    float density;
+    float light;
+};
 class Scene
 {
 public:
+    //---------------voxel--------
+    QList <Voxel> voxels;
+    //----------------------------
     Scene();
     QList<Geometry*> objects;
     QList<Material*> materials;

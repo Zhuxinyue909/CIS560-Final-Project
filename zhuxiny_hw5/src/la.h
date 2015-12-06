@@ -17,7 +17,10 @@
 
 #include <QMatrix4x4>
 
-
+static int w=100;
+static int h=100;
+static int l=100;
+static float step=0.1;
 static const float PI = 3.14159265358979323846f;
 static const float TWO_PI = 2 * PI;
 static const float INV_PI = 1.0f / PI;

@@ -38,7 +38,7 @@ private:
 public:
     explicit MyGL(QWidget *parent = 0);
     ~MyGL();
-
+    void SetVolumDensity();
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();

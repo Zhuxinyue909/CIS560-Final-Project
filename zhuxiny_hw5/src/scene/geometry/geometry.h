@@ -10,7 +10,7 @@
 class Material;
 class Intersection;
 
-//Geometry is an abstract class since it contains a pure virtual function (i.e. a virtual function that is set to 0)
+
 class Geometry : public Drawable
 {
 public:
@@ -40,6 +40,8 @@ public:
 //Member variables
     QString name;//Mainly used for debugging purposes
     Transform transform;
+ //   Voxel * voxels;
+    glm::vec3 voxelsize;
     Material* material;
     float area;
 };
